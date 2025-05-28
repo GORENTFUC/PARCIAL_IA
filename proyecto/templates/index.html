@@ -110,19 +110,19 @@
                 <h2>Decision Tree Model</h2>
                 <div class="metrics-container">
                     <div class="metric-card">
-                        <div class="metric-value">{{ dt_accuracy }}</div>
+                        <div class="metric-value">{{ dt_accuracy }}%</div>
                         <div class="metric-label">Accuracy</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ dt_precision }}</div>
+                        <div class="metric-value">{{ dt_precision }}%</div>
                         <div class="metric-label">Precision</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ dt_recall }}</div>
+                        <div class="metric-value">{{ dt_recall }}%</div>
                         <div class="metric-label">Recall</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ dt_f1 }}</div>
+                        <div class="metric-value">{{ dt_f1 }}%</div>
                         <div class="metric-label">F1 Score</div>
                     </div>
                 </div>
@@ -137,19 +137,19 @@
                 <h2>Naive Bayes Model</h2>
                 <div class="metrics-container">
                     <div class="metric-card">
-                        <div class="metric-value">{{ nb_accuracy }}</div>
+                        <div class="metric-value">{{ nb_accuracy }}%</div>
                         <div class="metric-label">Accuracy</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ nb_precision }}</div>
+                        <div class="metric-value">{{ nb_precision }}%</div>
                         <div class="metric-label">Precision</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ nb_recall }}</div>
+                        <div class="metric-value">{{ nb_recall }}%</div>
                         <div class="metric-label">Recall</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ nb_f1 }}</div>
+                        <div class="metric-value">{{ nb_f1 }}%</div>
                         <div class="metric-label">F1 Score</div>
                     </div>
                 </div>
@@ -160,19 +160,19 @@
                 <h2>SVM Model</h2>
                 <div class="metrics-container">
                     <div class="metric-card">
-                        <div class="metric-value">{{ svm_accuracy }}</div>
+                        <div class="metric-value">{{ svm_accuracy }}%</div>
                         <div class="metric-label">Accuracy</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ svm_precision }}</div>
+                        <div class="metric-value">{{ svm_precision }}%</div>
                         <div class="metric-label">Precision</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ svm_recall }}</div>
+                        <div class="metric-value">{{ svm_recall }}%</div>
                         <div class="metric-label">Recall</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">{{ svm_f1 }}</div>
+                        <div class="metric-value">{{ svm_f1 }}%</div>
                         <div class="metric-label">F1 Score</div>
                     </div>
                 </div>
@@ -199,6 +199,18 @@
         <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
         <script type="text/javascript">
+            // Data variables
+            var dtMetricsValues = JSON.parse('{{ dt_metrics_values|safe }}');
+            var nbMetricsValues = JSON.parse('{{ nb_metrics_values|safe }}');
+            var svmMetricsValues = JSON.parse('{{ svm_metrics_values|safe }}');
+
+            var comparisonData = JSON.parse('{{ comparison_data|safe }}');
+            var realValues = comparisonData.real_values;
+            var dtPredictions = comparisonData.dt_predictions;
+            var nbPredictions = comparisonData.nb_predictions;
+            var svmPredictions = comparisonData.svm_predictions;
+
+
             // Metrics Comparison Chart
             Highcharts.chart('metrics-comparison', {
                 title: { text: 'Models Metrics Comparison' },
@@ -209,9 +221,9 @@
                     max: 100
                 },
                 series: [
-                    { name: 'Decision Tree', data: {{ dt_metrics_values|safe }} },
-                    { name: 'Naive Bayes', data: {{ nb_metrics_values|safe }} },
-                    { name: 'SVM', data: {{ svm_metrics_values|safe }} }
+                    { name: 'Decision Tree', data: dtMetricsValues },
+                    { name: 'Naive Bayes', data: nbMetricsValues },
+                    { name: 'SVM', data: svmMetricsValues }
                 ]
             });
 
@@ -221,8 +233,8 @@
                 xAxis: { title: { text: 'Sample Index' } },
                 yAxis: { title: { text: 'Class' } },
                 series: [
-                    { name: 'Real Values', data: {{ comparison_data.real_values|safe }} },
-                    { name: 'DT Predictions', data: {{ comparison_data.dt_predictions|safe }} }
+                    { name: 'Real Values', data: realValues },
+                    { name: 'DT Predictions', data: dtPredictions }
                 ]
             });
 
@@ -232,8 +244,8 @@
                 xAxis: { title: { text: 'Sample Index' } },
                 yAxis: { title: { text: 'Class' } },
                 series: [
-                    { name: 'Real Values', data: {{ comparison_data.real_values|safe }} },
-                    { name: 'NB Predictions', data: {{ comparison_data.nb_predictions|safe }} }
+                    { name: 'Real Values', data: realValues },
+                    { name: 'NB Predictions', data: nbPredictions }
                 ]
             });
 
@@ -243,8 +255,8 @@
                 xAxis: { title: { text: 'Sample Index' } },
                 yAxis: { title: { text: 'Class' } },
                 series: [
-                    { name: 'Real Values', data: {{ comparison_data.real_values|safe }} },
-                    { name: 'SVM Predictions', data: {{ comparison_data.svm_predictions|safe }} }
+                    { name: 'Real Values', data: realValues },
+                    { name: 'SVM Predictions', data: svmPredictions }
                 ]
             });
         </script>

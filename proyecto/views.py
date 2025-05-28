@@ -32,7 +32,8 @@ warnings.simplefilter('ignore')
 
 def main(request):
     # *** Plantilla ***
-    return render(request, 'index.html', context={})
+    # return render(request, 'index.html', context={})
+    return prediccion(request)
 
 def prediccion(request):
     ### Se cargan los datos
@@ -127,39 +128,39 @@ def prediccion(request):
     # Crear datos para las gráficas de comparación individual
     comparison_data = {
         'indices': list(range(len(y_test))),
-        'real_values': y_test.tolist(),
-        'dt_predictions': predict_dt.tolist(),
-        'nb_predictions': predict_nb.tolist(),
-        'svm_predictions': predict_svm.tolist()
+        'real_values': [1 if val == 'Y' else 0 for val in y_test.tolist()],
+        'dt_predictions': [1 if val == 'Y' else 0 for val in predict_dt.tolist()],
+        'nb_predictions': [1 if val == 'Y' else 0 for val in predict_nb.tolist()],
+        'svm_predictions': [1 if val == 'Y' else 0 for val in predict_svm.tolist()]
     }
 
     # Preparar el contexto
     context = {
         # Métricas del árbol de decisión
-        'dt_accuracy': f"{dt_metrics['accuracy']}%",
-        'dt_precision': f"{dt_metrics['precision']}%",
-        'dt_recall': f"{dt_metrics['recall']}%",
-        'dt_f1': f"{dt_metrics['f1']}%",
+        'dt_accuracy': dt_metrics['accuracy'],
+        'dt_precision': dt_metrics['precision'],
+        'dt_recall': dt_metrics['recall'],
+        'dt_f1': dt_metrics['f1'],
         
         # Métricas de Naive Bayes
-        'nb_accuracy': f"{nb_metrics['accuracy']}%",
-        'nb_precision': f"{nb_metrics['precision']}%",
-        'nb_recall': f"{nb_metrics['recall']}%",
-        'nb_f1': f"{nb_metrics['f1']}%",
+        'nb_accuracy': nb_metrics['accuracy'],
+        'nb_precision': nb_metrics['precision'],
+        'nb_recall': nb_metrics['recall'],
+        'nb_f1': nb_metrics['f1'],
 
         # Métricas de SVM
-        'svm_accuracy': f"{svm_metrics['accuracy']}%",
-        'svm_precision': f"{svm_metrics['precision']}%",
-        'svm_recall': f"{svm_metrics['recall']}%",
-        'svm_f1': f"{svm_metrics['f1']}%",
+        'svm_accuracy': svm_metrics['accuracy'],
+        'svm_precision': svm_metrics['precision'],
+        'svm_recall': svm_metrics['recall'],
+        'svm_f1': svm_metrics['f1'],
         
         # Valores para gráficas de métricas
-        'dt_metrics_values': list(dt_metrics.values()),
-        'nb_metrics_values': list(nb_metrics.values()),
-        'svm_metrics_values': list(svm_metrics.values()),
+        'dt_metrics_values': json.dumps([dt_metrics['accuracy'], dt_metrics['precision'], dt_metrics['recall'], dt_metrics['f1']]),
+        'nb_metrics_values': json.dumps([nb_metrics['accuracy'], nb_metrics['precision'], nb_metrics['recall'], nb_metrics['f1']]),
+        'svm_metrics_values': json.dumps([svm_metrics['accuracy'], svm_metrics['precision'], svm_metrics['recall'], svm_metrics['f1']]),
         
         # Datos para gráficas de comparación individual
-        'comparison_data': comparison_data,
+        'comparison_data': json.dumps(comparison_data),
         
         # Mejores parámetros encontrados
         'dt_best_params': dt.best_params_,
