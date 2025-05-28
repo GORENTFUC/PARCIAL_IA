@@ -1,4 +1,4 @@
-# parcial-ia
+# PARCIAL_IA
 
 A brief description of your project, what it does, and why it exists.
 
