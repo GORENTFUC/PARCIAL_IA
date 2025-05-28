@@ -54,8 +54,7 @@ ROOT_URLCONF = 'proyecto.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Cambiar la ruta del template
-        'DIRS': ['/home/jose/Documentos/GitHub/django_ml/proyecto/templates'],
+        'DIRS': [BASE_DIR / 'proyecto' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

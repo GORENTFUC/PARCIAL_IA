@@ -1,107 +1,254 @@
 <html>
 <head>
-    <title>.:: Modelo de Predicción ::.</title>
+    <title>.:: Diabetes Prediction Models ::.</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+            text-align: center;
+        }
+        .models-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .model-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .metric-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .best-params {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .best-params h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .best-params code {
+            background-color: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .chart {
+            min-height: 400px;
+        }
+    </style>
 </head>
 <body>
-    <form action="/prediccion/" method="post">
-        {% csrf_token %}
-        <h3>Esta es una aplicación Django que incluye un modelo de predicción</h3>
-        
-        <p>&nbsp;</p>
-        <button type="submit">Predecir</button>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        
+    <div class="container">
+        <h1>Diabetes Prediction Models</h1>
+        <form action="/prediccion/" method="post">
+            {% csrf_token %}
+            <button type="submit">Run Prediction</button>
+        </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Valor Real:</th>
-                    <td>{{ test}}</td>
-                </tr>
-                <tr>
-                    <th>Valor Predicción: </th>
-                    <td>{{ prediction}}</td>
-                </tr>
-            </thead>
-        </table>
-    </form>
-
-     <!-- Gráfica highcharts-->
-     <div class="row">
-        <p>&nbsp;</p>
-        <div class="col-md-12">
-        <div class="main-card mb-3 card">
-
-            <script src="https://code.highcharts.com/highcharts.js"></script>
-            <script src="https://code.highcharts.com/modules/series-label.js"></script>
-            <script src="https://code.highcharts.com/modules/exporting.js"></script>
-            <script src="https://code.highcharts.com/modules/export-data.js"></script>
-            <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
-            <figure class="highcharts-figure">
-                <div id="container">
-
+        {% if comparison_data %}
+        <div class="models-container">
+            <!-- Decision Tree Section -->
+            <div class="model-section">
+                <h2>Decision Tree Model</h2>
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ dt_accuracy }}</div>
+                        <div class="metric-label">Accuracy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ dt_precision }}</div>
+                        <div class="metric-label">Precision</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ dt_recall }}</div>
+                        <div class="metric-label">Recall</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ dt_f1 }}</div>
+                        <div class="metric-label">F1 Score</div>
+                    </div>
                 </div>
-            </figure>
+                <div class="best-params">
+                    <h4>Best Parameters:</h4>
+                    <code>{{ dt_best_params }}</code>
+                </div>
+            </div>
 
-            <script type="text/javascript">
+            <!-- Naive Bayes Section -->
+            <div class="model-section">
+                <h2>Naive Bayes Model</h2>
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ nb_accuracy }}</div>
+                        <div class="metric-label">Accuracy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ nb_precision }}</div>
+                        <div class="metric-label">Precision</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ nb_recall }}</div>
+                        <div class="metric-label">Recall</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ nb_f1 }}</div>
+                        <div class="metric-label">F1 Score</div>
+                    </div>
+                </div>
+            </div>
 
-                Highcharts.chart('container', {
-
-                title: {
-                    text: 'Valores reales VS Predicción'
-                },
-
-                subtitle: {
-                    text: 'Datos origen: Clima, temperatura y jugar'
-                },
-
-                yAxis: {
-                    title: {
-                        text: 'Predicción'
-                    }
-                },
-
-                xAxis: {
-                    categories: []
-                },
-
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'middle'
-                },
-
-                series: [{
-                    name: 'Valores reales',
-                    data: {{test|safe}}
-                }, {
-                    name: 'Valores Predicción',
-                    data: {{prediction|safe}}
-                }],
-
-                responsive: {
-                    rules: [{
-                        condition: {
-                            maxWidth: 500
-                        },
-                        chartOptions: {
-                            legend: {
-                                layout: 'horizontal',
-                                align: 'center',
-                                verticalAlign: 'bottom'
-                            }
-                        }
-                    }]
-                }
-
-                });
-            </script>
+            <!-- SVM Section -->
+            <div class="model-section">
+                <h2>SVM Model</h2>
+                <div class="metrics-container">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ svm_accuracy }}</div>
+                        <div class="metric-label">Accuracy</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ svm_precision }}</div>
+                        <div class="metric-label">Precision</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ svm_recall }}</div>
+                        <div class="metric-label">Recall</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ svm_f1 }}</div>
+                        <div class="metric-label">F1 Score</div>
+                    </div>
+                </div>
+                <div class="best-params">
+                    <h4>Best Parameters:</h4>
+                    <code>{{ svm_best_params }}</code>
+                </div>
             </div>
         </div>
+
+        <!-- Charts Section -->
+        <h2>Model Performance Comparison</h2>
+        <div class="charts-container">
+            <div class="chart" id="metrics-comparison"></div>
+            <div class="chart" id="dt-comparison"></div>
+            <div class="chart" id="nb-comparison"></div>
+            <div class="chart" id="svm-comparison"></div>
+        </div>
+
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/series-label.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+        <script type="text/javascript">
+            // Metrics Comparison Chart
+            Highcharts.chart('metrics-comparison', {
+                title: { text: 'Models Metrics Comparison' },
+                xAxis: { categories: ['Accuracy', 'Precision', 'Recall', 'F1 Score'] },
+                yAxis: { 
+                    title: { text: 'Score (%)' },
+                    min: 0,
+                    max: 100
+                },
+                series: [
+                    { name: 'Decision Tree', data: {{ dt_metrics_values|safe }} },
+                    { name: 'Naive Bayes', data: {{ nb_metrics_values|safe }} },
+                    { name: 'SVM', data: {{ svm_metrics_values|safe }} }
+                ]
+            });
+
+            // Decision Tree Comparison Chart
+            Highcharts.chart('dt-comparison', {
+                title: { text: 'Decision Tree vs Real Values' },
+                xAxis: { title: { text: 'Sample Index' } },
+                yAxis: { title: { text: 'Class' } },
+                series: [
+                    { name: 'Real Values', data: {{ comparison_data.real_values|safe }} },
+                    { name: 'DT Predictions', data: {{ comparison_data.dt_predictions|safe }} }
+                ]
+            });
+
+            // Naive Bayes Comparison Chart
+            Highcharts.chart('nb-comparison', {
+                title: { text: 'Naive Bayes vs Real Values' },
+                xAxis: { title: { text: 'Sample Index' } },
+                yAxis: { title: { text: 'Class' } },
+                series: [
+                    { name: 'Real Values', data: {{ comparison_data.real_values|safe }} },
+                    { name: 'NB Predictions', data: {{ comparison_data.nb_predictions|safe }} }
+                ]
+            });
+
+            // SVM Comparison Chart
+            Highcharts.chart('svm-comparison', {
+                title: { text: 'SVM vs Real Values' },
+                xAxis: { title: { text: 'Sample Index' } },
+                yAxis: { title: { text: 'Class' } },
+                series: [
+                    { name: 'Real Values', data: {{ comparison_data.real_values|safe }} },
+                    { name: 'SVM Predictions', data: {{ comparison_data.svm_predictions|safe }} }
+                ]
+            });
+        </script>
+        {% endif %}
     </div>
-    <!-- Fin gráfica highcharts-->
-    
 </body>
 </html>

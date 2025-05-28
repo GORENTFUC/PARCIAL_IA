@@ -21,6 +21,6 @@ from proyecto.views import prediccion
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('main/', main, name='main'),   # Directa
+    path('', main, name='main'),   # Directa
     path('prediccion/', prediccion),    # Botones
 ]
