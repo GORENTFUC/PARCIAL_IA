@@ -9,6 +9,9 @@ Proyecto final de Django para implementación de modelos de machine learning
 ## Link DataSet
 https://www.kaggle.com/datasets/marshalpatel3558/diabetes-prediction-dataset-legit-dataset
 
+## Link del proyecto en Colabority
+https://colab.research.google.com/drive/1gUicV3GnQSDPHPlBvsUB-aVtspVgucrF?usp=sharing
+
 ## 🚀 Features
 - Feature 1
 - Feature 2
