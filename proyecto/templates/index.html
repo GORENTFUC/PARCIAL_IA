@@ -19,6 +19,18 @@
             color: #333;
             text-align: center;
         }
+        .welcome-section {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .welcome-section p {
+            font-size: 18px;
+            color: #666;
+            margin: 20px 0;
+        }
         .models-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -56,12 +68,13 @@
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 15px 30px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             display: block;
             margin: 20px auto;
+            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #0056b3;
@@ -98,12 +111,30 @@
 <body>
     <div class="container">
         <h1>Diabetes Prediction Models</h1>
+
+        {% if show_initial %}
+        <!-- Vista Inicial -->
+        <div class="welcome-section">
+            <h2>Welcome to the Diabetes Prediction System</h2>
+            <p>This system uses three different machine learning models to predict diabetes:</p>
+            <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
+                <li>Decision Tree Classifier with optimized parameters</li>
+                <li>Naive Bayes Classifier</li>
+                <li>Support Vector Machine (SVM) with optimized parameters</li>
+            </ul>
+            <p>Click the button below to start the prediction process and compare the models' performance.</p>
+            <form action="/prediccion/" method="post">
+                {% csrf_token %}
+                <button type="submit">Start Prediction Analysis</button>
+            </form>
+        </div>
+        {% else %}
+        <!-- Vista de Resultados -->
         <form action="/prediccion/" method="post">
             {% csrf_token %}
-            <button type="submit">Run Prediction</button>
+            <button type="submit">Run New Prediction</button>
         </form>
 
-        {% if comparison_data %}
         <div class="models-container">
             <!-- Decision Tree Section -->
             <div class="model-section">
@@ -209,7 +240,6 @@
             var dtPredictions = comparisonData.dt_predictions;
             var nbPredictions = comparisonData.nb_predictions;
             var svmPredictions = comparisonData.svm_predictions;
-
 
             // Metrics Comparison Chart
             Highcharts.chart('metrics-comparison', {

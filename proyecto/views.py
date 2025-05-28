@@ -31,11 +31,15 @@ import warnings
 warnings.simplefilter('ignore')
 
 def main(request):
-    # *** Plantilla ***
-    # return render(request, 'index.html', context={})
-    return prediccion(request)
+    # Vista inicial sin predicciones
+    return render(request, 'index.html', context={
+        'show_initial': True  # Flag para mostrar vista inicial
+    })
 
 def prediccion(request):
+    if request.method != 'POST':
+        return main(request)
+
     ### Se cargan los datos
     data = pd.read_csv(BASE_DIR / 'proyecto' / 'data' / 'Dataset of Diabetes.csv')
 
@@ -136,6 +140,7 @@ def prediccion(request):
 
     # Preparar el contexto
     context = {
+        'show_initial': False,  # Flag para mostrar resultados
         # Métricas del árbol de decisión
         'dt_accuracy': dt_metrics['accuracy'],
         'dt_precision': dt_metrics['precision'],
