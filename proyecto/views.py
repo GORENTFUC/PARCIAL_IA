@@ -65,39 +65,25 @@ def prediccion(request):
 
     # Balancear las clases usando resample
     df_train = pd.concat([pd.DataFrame(X_train), pd.Series(y_train, name='CLASS')], axis=1)
-    
-    # Identificar la clase mayoritaria
     class_counts = df_train['CLASS'].value_counts()
     majority_count = class_counts.max()
     
-    # Balancear cada clase
     balanced_dfs = []
     for class_label in class_counts.index:
         df_class = df_train[df_train['CLASS'] == class_label]
         if len(df_class) < majority_count:
-            df_class_balanced = resample(df_class,
-                                      replace=True,
-                                      n_samples=majority_count,
-                                      random_state=42)
+            df_class_balanced = resample(df_class, replace=True, n_samples=majority_count, random_state=42)
             balanced_dfs.append(df_class_balanced)
         else:
             balanced_dfs.append(df_class)
     
-    # Combinar todos los datos balanceados
     df_train_balanced = pd.concat(balanced_dfs)
-    
-    # Separar características y objetivo de los datos balanceados
     X_train_balanced = df_train_balanced.drop('CLASS', axis=1)
     y_train_balanced = df_train_balanced['CLASS']
 
     ### Entrenar y predecir con múltiples modelos
-    # Árbol de Decisión con GridSearch
-    param_grid_dt = {
-        'max_depth': [3, 5, 7],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4]
-    }
-    dt = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid_dt, cv=5)
+    # Árbol de Decisión
+    dt = DecisionTreeClassifier(random_state=42)
     dt.fit(X_train_balanced, y_train_balanced)
     predict_dt = dt.predict(X_test)
 
@@ -106,13 +92,8 @@ def prediccion(request):
     nb.fit(X_train_balanced, y_train_balanced)
     predict_nb = nb.predict(X_test)
 
-    # Support Vector Machine con GridSearch
-    param_grid_svm = {
-        'C': [0.1, 1, 10],
-        'kernel': ['rbf', 'linear'],
-        'gamma': ['scale', 'auto']
-    }
-    svm = GridSearchCV(SVC(random_state=42), param_grid_svm, cv=5)
+    # Support Vector Machine
+    svm = SVC(random_state=42)
     svm.fit(X_train_balanced, y_train_balanced)
     predict_svm = svm.predict(X_test)
 
@@ -131,7 +112,6 @@ def prediccion(request):
 
     # Crear datos para las gráficas de comparación individual
     comparison_data = {
-        'indices': list(range(len(y_test))),
         'real_values': [1 if val == 'Y' else 0 for val in y_test.tolist()],
         'dt_predictions': [1 if val == 'Y' else 0 for val in predict_dt.tolist()],
         'nb_predictions': [1 if val == 'Y' else 0 for val in predict_nb.tolist()],
@@ -165,11 +145,7 @@ def prediccion(request):
         'svm_metrics_values': json.dumps([svm_metrics['accuracy'], svm_metrics['precision'], svm_metrics['recall'], svm_metrics['f1']]),
         
         # Datos para gráficas de comparación individual
-        'comparison_data': json.dumps(comparison_data),
-        
-        # Mejores parámetros encontrados
-        'dt_best_params': dt.best_params_,
-        'svm_best_params': svm.best_params_
+        'comparison_data': json.dumps(comparison_data)
     }
 
     return render(request, 'index.html', context)
