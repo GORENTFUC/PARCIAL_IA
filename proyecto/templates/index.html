@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>.:: Diabetes Prediction Models ::.</title>
+    <title>.:: Modelos de Predicción de Diabetes ::.</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -110,23 +110,28 @@
 </head>
 <body>
     <div class="container">
-        <h1>Diabetes Prediction Models</h1>
+        <h1>Sistema de Predicción de Diabetes</h1>
 
         {% if show_initial %}
         <!-- Vista Inicial -->
         <div class="welcome-section">
-            <h2>Welcome to the Diabetes Prediction System</h2>
-            <p>This system uses three different machine learning models to predict diabetes:</p>
+            <h2>Sistema de Predicción de Diabetes</h2>
+            <p>Este sistema utiliza tres modelos diferentes de aprendizaje automático para predecir la diabetes:</p>
             <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
-                <li>Decision Tree Classifier with optimized parameters</li>
-                <li>Naive Bayes Classifier</li>
-                <li>Support Vector Machine (SVM) with optimized parameters</li>
+                <li>Clasificador de Árbol de Decisión con parámetros optimizados</li>
+                <li>Clasificador Naive Bayes</li>
+                <li>Máquina de Vectores de Soporte (SVM) con parámetros optimizados</li>
             </ul>
-            <p>Click the button below to start the prediction process and compare the models' performance.</p>
+            <p>Haz clic en el botón de abajo para iniciar el proceso de predicción y comparar el desempeño de los modelos.</p>
             <form action="/prediccion/" method="post">
                 {% csrf_token %}
-                <button type="submit">Start Prediction Analysis</button>
+                <button type="submit">Iniciar Análisis de Predicción</button>
             </form>
+            <hr style="margin-top: 40px; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <p style="max-width: 500px; margin: 20px auto; font-size: 0.9em; color: #555;">
+                <strong>Desarrolladores:</strong> Estiven Liscano, Juan Lizcano<br>
+                <strong>Supervisor y tutor:</strong> Ingeniero José M. Llanos
+            </p>
         </div>
         {% else %}
         <!-- Vista de Resultados -->
